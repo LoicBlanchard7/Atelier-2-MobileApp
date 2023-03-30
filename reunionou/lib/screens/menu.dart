@@ -3,6 +3,7 @@ import 'package:reunionou/main.dart';
 import 'package:reunionou/models/event.dart';
 import 'package:reunionou/screens/Widget/event_preview.dart';
 import 'package:reunionou/screens/creation.dart';
+import 'package:reunionou/screens/profile.dart';
 
 class MenuApp extends StatelessWidget {
   const MenuApp({super.key});
@@ -39,7 +40,21 @@ class _SigInpAppState extends State<MySignInPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Reunionou'), centerTitle: true),
+      appBar: AppBar(
+        title: const Text('Reunionou'),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const Profile()),
+              );
+            },
+            icon: const Icon(Icons.person),
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           final newEventResult = Navigator.push(
