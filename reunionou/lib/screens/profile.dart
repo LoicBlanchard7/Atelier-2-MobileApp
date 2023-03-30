@@ -15,7 +15,6 @@ class _ProfileState extends State<Profile> {
     String? name;
     String? firstname;
     String? password;
-    String? confirmedpassword;
 
     return Scaffold(
       appBar: AppBar(
@@ -69,7 +68,7 @@ class _ProfileState extends State<Profile> {
                         if (formKeyName.currentState!.validate()) {
                           formKeyName.currentState!.save();
                           print(
-                              'SAVING ---nom:"${name}"---prénom:"${firstname}"---');
+                              'SAVING ---nom:"$name"---prénom:"$firstname"---');
                           const snackBar = SnackBar(
                               content:
                                   Text('Nouveaux nom et prénom sauvegardés'));
@@ -125,7 +124,7 @@ class _ProfileState extends State<Profile> {
                       onPressed: () {
                         if (formKeyPassword.currentState!.validate()) {
                           formKeyPassword.currentState!.save();
-                          print('SAVING --password:"${password}"---');
+                          print('SAVING --password:"$password"---');
                           const snackBar = SnackBar(
                               content: Text('Nouveau mot de passe sauvegardé'));
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);

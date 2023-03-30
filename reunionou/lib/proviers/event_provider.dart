@@ -92,6 +92,16 @@ class EventProvider extends ChangeNotifier {
     return listParticipants;
   }
 
+  Future<List<String>> getAllParticipants() async {
+    List<String> listParticipants = [
+      'Léa Jazosz',
+      'Lilian Leblanc',
+      'Loïc Blanchard'
+    ];
+    notifyListeners();
+    return listParticipants;
+  }
+
   void addParticipant(Event event, Participant participant) async {
     event.participants.add(participant);
     notifyListeners();

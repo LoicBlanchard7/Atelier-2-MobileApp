@@ -46,11 +46,15 @@ class _DetailspAppState extends State<DetailsApp> {
     return eventProvider.getComments(event);
   }
 
+  Future<List<String>> _fetchAllParticipants() async {
+    return eventProvider.getAllParticipants();
+  }
+
   @override
   Widget build(BuildContext context) {
     Future<void> putComment(String titre) async {
       TextEditingController commentController = TextEditingController();
-      await showDialog<bool>(
+      final comment = await showDialog<bool>(
         context: context,
         builder: (context) {
           return AlertDialog(
@@ -75,7 +79,7 @@ class _DetailspAppState extends State<DetailsApp> {
           );
         },
       );
-      if (commentController.text.isNotEmpty) {
+      if (comment == true && commentController.text.isNotEmpty) {
         setState(() {
           eventProvider.addComment(
               event,
@@ -133,7 +137,49 @@ class _DetailspAppState extends State<DetailsApp> {
           const SizedBox(height: 10),
           FloatingActionButton(
             onPressed: () async {
-              // TODO : set-up add friends
+              await showDialog<bool>(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: const Text("Inviter des utilisateurs"),
+                    content: FutureBuilder<List<String>>(
+                        future: _fetchAllParticipants(),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<List<String>> snapshot) {
+                          if (snapshot.hasData) {
+                            List<String> listAllParticipants =
+                                snapshot.data as List<String>;
+                            List<TableRow> allParticipants = [];
+                            for (var personne in listAllParticipants) {
+                              allParticipants.add(
+                                TableRow(
+                                  children: [
+                                    TextButton(
+                                      child: const Text('Inviter'),
+                                      onPressed: () {
+                                        print('inviter $personne');
+                                      },
+                                    ),
+                                    Text(personne),
+                                  ],
+                                ),
+                              );
+                            }
+                            return Table(
+                              children: allParticipants,
+                            );
+                          }
+                          return Container();
+                        }),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text('Quitter'),
+                      ),
+                    ],
+                  );
+                },
+              );
             },
             heroTag: null,
             child: const Icon(Icons.group_add),
