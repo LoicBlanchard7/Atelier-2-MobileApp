@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:reunionou/screens/menu.dart';
 
 class SignInApp extends StatelessWidget {
@@ -29,6 +31,15 @@ class MySignInPage extends StatefulWidget {
 class _SigInpAppState extends State<MySignInPage> {
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+
+  void _launchUrl() async {
+    String url = "https://www.youtube.com/";
+    if (!await launchUrl(Uri.parse(url))) {
+      if (kDebugMode) {
+        print("URL can't be launched.");
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -95,8 +106,8 @@ class _SigInpAppState extends State<MySignInPage> {
                     'Inscrivez-vous',
                     style: TextStyle(fontSize: 20),
                   ),
-                  onPressed: () {
-                    //TODO : accéder au navigateur avec le lien de l'appli web
+                  onPressed: () async {
+                    _launchUrl();
                   },
                 )
               ],
