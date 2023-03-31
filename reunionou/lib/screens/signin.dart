@@ -1,5 +1,8 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:reunionou/main.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:reunionou/screens/menu.dart';
 
@@ -31,8 +34,10 @@ class MySignInPage extends StatefulWidget {
 class _SigInpAppState extends State<MySignInPage> {
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  bool badPassword = false;
 
   void _launchUrl() async {
+    // TODO : mettre lien inscription WebApp
     String url = "https://www.youtube.com/";
     if (!await launchUrl(Uri.parse(url))) {
       if (kDebugMode) {
@@ -48,22 +53,24 @@ class _SigInpAppState extends State<MySignInPage> {
         child: ListView(
           children: <Widget>[
             Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.all(10),
-                child: const Text(
-                  'Reunionou',
-                  style: TextStyle(
-                      color: Colors.blue,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 30),
-                )),
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(10),
+              child: const Text(
+                'Reunionou',
+                style: TextStyle(
+                    color: Colors.blue,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 30),
+              ),
+            ),
             Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.all(10),
-                child: const Text(
-                  'Connectez-vous',
-                  style: TextStyle(fontSize: 20),
-                )),
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(10),
+              child: const Text(
+                'Connectez-vous',
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
             Container(
               padding: const EdgeInsets.all(10),
               child: TextField(
@@ -86,17 +93,42 @@ class _SigInpAppState extends State<MySignInPage> {
               ),
             ),
             Container(
-                height: 50,
-                padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                child: ElevatedButton(
-                  child: const Text('Connection'),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const MenuApp()),
-                    );
-                  },
-                )),
+              height: 50,
+              padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+              child: ElevatedButton(
+                child: const Text('Connection'),
+                onPressed: () async {
+                  setState(() {
+                    final response = eventProvider.connect(
+                        nameController.text, passwordController.text);
+                    response.then((value) {
+                      if (value == 200) {
+                        badPassword = false;
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const MenuApp()),
+                        );
+                      } else {
+                        badPassword = true;
+                      }
+                    });
+                  });
+                },
+              ),
+            ),
+            if (badPassword)
+              Container(
+                alignment: Alignment.center,
+                padding: const EdgeInsets.all(10),
+                child: const Text(
+                  'E-mail ou mot de passe incorrect',
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: Colors.red,
+                  ),
+                ),
+              ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

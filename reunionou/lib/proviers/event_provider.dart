@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 import 'package:reunionou/models/comment.dart';
 import 'package:reunionou/models/event.dart';
 import 'package:reunionou/models/participant.dart';
@@ -75,6 +79,28 @@ class EventProvider extends ChangeNotifier {
       ],
     )
   ];
+  String myUID = "";
+  String accessToken = "";
+  static const urlPrefix = 'http://iut.netlor.fr';
+  // static const urlPrefix = 'https://jsonplaceholder.typicode.com';
+
+  void setUpToken(String newUid, String newToken) {
+    myUID = newUid;
+    accessToken = newToken;
+  }
+
+  Future<int> connect(String email, String password) async {
+    final url = Uri.parse('$urlPrefix/auth/signin');
+    final headers = {"Content-type": "application/json"};
+    final json = '{"email" : "$email", "password" : "$password"}';
+    final response = await post(url, headers: headers, body: json);
+    print('Status code: ${response.statusCode}');
+    if (response.statusCode == 200) {
+      myUID = jsonDecode(response.body)['uid'];
+      accessToken = jsonDecode(response.body)['access_token'];
+    }
+    return response.statusCode;
+  }
 
   Future<List<Event>> getEvents() async {
     notifyListeners();

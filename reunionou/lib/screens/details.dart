@@ -21,10 +21,6 @@ class _DetailspAppState extends State<DetailsApp> {
   Event event;
   _DetailspAppState(this.event);
 
-  List<Widget> fkoatingButtonsWidgetList = [];
-  List<Widget> participantsWidgetList = [];
-  List<Widget> commentsWidgetList = [];
-
   Future<String> _fetchState() async {
     if (event.creator == 'erwan@bourlon.fr') {
       return 'Créateur';
@@ -157,6 +153,7 @@ class _DetailspAppState extends State<DetailsApp> {
                                     TextButton(
                                       child: const Text('Inviter'),
                                       onPressed: () {
+                                        // TODO : inviter personne
                                         print('inviter $personne');
                                       },
                                     ),

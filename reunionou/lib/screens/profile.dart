@@ -67,6 +67,7 @@ class _ProfileState extends State<Profile> {
                       onPressed: () {
                         if (formKeyName.currentState!.validate()) {
                           formKeyName.currentState!.save();
+                          // TODO : post save name/firstname
                           print(
                               'SAVING ---nom:"$name"---prénom:"$firstname"---');
                           const snackBar = SnackBar(
@@ -124,6 +125,7 @@ class _ProfileState extends State<Profile> {
                       onPressed: () {
                         if (formKeyPassword.currentState!.validate()) {
                           formKeyPassword.currentState!.save();
+                          // TODO : post save password
                           print('SAVING --password:"$password"---');
                           const snackBar = SnackBar(
                               content: Text('Nouveau mot de passe sauvegardé'));
