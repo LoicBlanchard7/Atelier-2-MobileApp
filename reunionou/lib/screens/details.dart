@@ -78,7 +78,7 @@ class _DetailspAppState extends State<DetailsApp> {
       if (comment == true && commentController.text.isNotEmpty) {
         setState(() {
           eventProvider.addComment(
-              event,
+              "1390284e-dac8-4a79-a050-c0f89f63c915",
               Comment(
                   author: 'Erwan Bourlon', comment: commentController.text));
         });
