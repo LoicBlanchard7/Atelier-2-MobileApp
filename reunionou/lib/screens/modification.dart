@@ -1,35 +1,49 @@
+// ignore_for_file: no_logic_in_create_state, must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:reunionou/main.dart';
-import 'package:reunionou/models/creator.dart';
 import 'package:reunionou/models/event.dart';
 import 'package:reunionou/screens/map.dart';
 
-class EventCreation extends StatefulWidget {
-  const EventCreation({super.key});
+class EventUpdate extends StatefulWidget {
+  Event event;
+  EventUpdate(this.event, {super.key});
 
   @override
-  State<EventCreation> createState() => _EventCreationState();
+  State<EventUpdate> createState() => _EventUpdateState(event);
 }
 
-class _EventCreationState extends State<EventCreation> {
+class _EventUpdateState extends State<EventUpdate> {
+  Event event;
+  _EventUpdateState(this.event);
   TextEditingController addressInput = TextEditingController();
   TextEditingController dateInput = TextEditingController();
   TextEditingController timeInput = TextEditingController();
+  TextEditingController descriptionInput = TextEditingController();
+
+  String showTime(int time) {
+    if (time.toString().length > 1) {
+      return '$time';
+    } else {
+      return '0$time';
+    }
+  }
+
   @override
   void initState() {
-    addressInput.text = "";
-    dateInput.text = "";
-    timeInput.text = "";
+    addressInput.text =
+        'Latitude : "${event.address.split('-')[0]}" - Longitude : "${event.address.split('-')[1]}"';
+    dateInput.text = "${event.time.year}-${event.time.month}-${event.time.day}";
+    timeInput.text =
+        '${showTime(event.time.hour)}:${showTime(event.time.minute)}';
+    descriptionInput.text = event.description;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-    String? title;
-    String? description;
-    String? address;
 
     String? checkFormField(value) {
       if (value == "") {
@@ -44,15 +58,9 @@ class _EventCreationState extends State<EventCreation> {
         appBar: AppBar(
           title: const Center(
             child: Text(
-              "Création d'un nouvel évenement",
+              "Modification de l'évenement",
               style: TextStyle(fontFamily: 'PermanentMarker'),
             ),
-          ),
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back_rounded),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
           ),
         ),
         body: SingleChildScrollView(
@@ -60,6 +68,17 @@ class _EventCreationState extends State<EventCreation> {
             padding: const EdgeInsets.all(50),
             child: Column(
               children: [
+                Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.all(10),
+                  child: Text(
+                    event.title,
+                    style: const TextStyle(
+                        color: Colors.blue,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 30),
+                  ),
+                ),
                 TextFormField(
                   controller: addressInput,
                   decoration: const InputDecoration(
@@ -68,9 +87,6 @@ class _EventCreationState extends State<EventCreation> {
                   ),
                   readOnly: true,
                   validator: (value) => checkFormField(value),
-                  onSaved: (value) {
-                    address = value;
-                  },
                   onTap: () {
                     final result = Navigator.push(
                       context,
@@ -128,22 +144,11 @@ class _EventCreationState extends State<EventCreation> {
                       }
                     }),
                 TextFormField(
-                  decoration: const InputDecoration(
-                    labelText: "Titre de l'évenement",
-                  ),
-                  validator: (value) => checkFormField(value),
-                  onSaved: (value) {
-                    title = value;
-                  },
-                ),
-                TextFormField(
+                  controller: descriptionInput,
                   decoration: const InputDecoration(
                     labelText: "Description de l'évenement",
                   ),
                   validator: (value) => checkFormField(value),
-                  onSaved: (value) {
-                    description = value;
-                  },
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 20),
@@ -160,22 +165,15 @@ class _EventCreationState extends State<EventCreation> {
                           int.parse(splittedTime[0]),
                           int.parse(splittedTime[1]),
                         );
-                        Event event = Event(
-                          creator: Creator(
-                              firstname: eventProvider.myFirstname,
-                              name: eventProvider.myName,
-                              email: eventProvider.myEmail),
-                          title: title!,
-                          description: description!,
-                          time: time,
-                          address: address!,
-                          status: 'creator',
-                          eid: '',
-                        );
+                        event.address =
+                            "${addressInput.text.split('"')[1]}-${addressInput.text.split('"')[3]}";
+                        event.time = time;
+                        event.description = descriptionInput.text;
+                        eventProvider.updateEvent(event);
                         Navigator.of(context).pop(event);
                       }
                     },
-                    child: const Text('créer'),
+                    child: const Text('sauvegarder'),
                   ),
                 ),
               ],

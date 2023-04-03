@@ -20,10 +20,15 @@ class _EventPreviewState extends State<EventPreview> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
+        final result = Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => DetailsApp(event)),
         );
+        result.then((value) => setState(() {
+              if (value != null) {
+                event = value;
+              }
+            }));
       },
       child: Card(
         shape: RoundedRectangleBorder(

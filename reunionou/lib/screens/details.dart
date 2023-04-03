@@ -4,10 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:gradient_slide_to_act/gradient_slide_to_act.dart';
 import 'package:intl/intl.dart';
 import 'package:clipboard/clipboard.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:reunionou/main.dart';
 import 'package:reunionou/models/comment.dart';
 import 'package:reunionou/models/event.dart';
 import 'package:reunionou/models/participant.dart';
+import 'package:reunionou/screens/Widget/test_map-1.dart';
+import 'package:reunionou/screens/modification.dart';
+import 'package:syncfusion_flutter_maps/maps.dart';
 
 class DetailsApp extends StatefulWidget {
   Event event;
@@ -22,15 +26,15 @@ class _DetailspAppState extends State<DetailsApp> {
   _DetailspAppState(this.event);
 
   Future<String> _fetchState() async {
-    if (event.creator == 'erwan@bourlon.fr') {
-      return 'Créateur';
-    } else {
-      for (var participant in event.participants) {
-        if (participant.email == 'erwan@bourlon.fr') {
-          return participant.state;
-        }
-      }
-      return 'Invité(e)';
+    switch (event.status) {
+      case 'creator':
+        return 'Créateur';
+      case 'declined':
+        return 'Absent(e)';
+      case 'accepted':
+        return 'Présent(e)';
+      default:
+        return 'Invité(e)';
     }
   }
 
@@ -42,12 +46,13 @@ class _DetailspAppState extends State<DetailsApp> {
     return eventProvider.getComments(event);
   }
 
-  Future<List<String>> _fetchAllParticipants() async {
+  Future<List<Participant>> _fetchAllParticipants() async {
     return eventProvider.getAllParticipants();
   }
 
   @override
   Widget build(BuildContext context) {
+    bool updated = false;
     Future<void> putComment(String titre) async {
       TextEditingController commentController = TextEditingController();
       final comment = await showDialog<bool>(
@@ -78,9 +83,11 @@ class _DetailspAppState extends State<DetailsApp> {
       if (comment == true && commentController.text.isNotEmpty) {
         setState(() {
           eventProvider.addComment(
-              "1390284e-dac8-4a79-a050-c0f89f63c915",
+              event,
               Comment(
-                  author: 'Erwan Bourlon', comment: commentController.text));
+                  author:
+                      '${eventProvider.myFirstname} ${eventProvider.myName}',
+                  comment: commentController.text));
         });
       }
     }
@@ -138,13 +145,13 @@ class _DetailspAppState extends State<DetailsApp> {
                 builder: (context) {
                   return AlertDialog(
                     title: const Text("Inviter des utilisateurs"),
-                    content: FutureBuilder<List<String>>(
+                    content: FutureBuilder<List<Participant>>(
                         future: _fetchAllParticipants(),
                         builder: (BuildContext context,
-                            AsyncSnapshot<List<String>> snapshot) {
+                            AsyncSnapshot<List<Participant>> snapshot) {
                           if (snapshot.hasData) {
-                            List<String> listAllParticipants =
-                                snapshot.data as List<String>;
+                            List<Participant> listAllParticipants =
+                                snapshot.data as List<Participant>;
                             List<TableRow> allParticipants = [];
                             for (var personne in listAllParticipants) {
                               allParticipants.add(
@@ -153,17 +160,21 @@ class _DetailspAppState extends State<DetailsApp> {
                                     TextButton(
                                       child: const Text('Inviter'),
                                       onPressed: () {
-                                        // TODO : inviter personne
-                                        print('inviter $personne');
+                                        setState(() {
+                                          eventProvider.inviteToEvent(
+                                              event, personne);
+                                        });
                                       },
                                     ),
-                                    Text(personne),
+                                    Text(personne.name),
                                   ],
                                 ),
                               );
                             }
-                            return Table(
-                              children: allParticipants,
+                            return SingleChildScrollView(
+                              child: Table(
+                                children: allParticipants,
+                              ),
                             );
                           }
                           return Container();
@@ -181,6 +192,23 @@ class _DetailspAppState extends State<DetailsApp> {
             heroTag: null,
             child: const Icon(Icons.group_add),
           ),
+          const SizedBox(height: 10),
+          FloatingActionButton(
+            onPressed: () {
+              final result = Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => EventUpdate(event)),
+              );
+              result.then((value) => setState(() {
+                    if (value != null) {
+                      event = value;
+                      updated = true;
+                    }
+                  }));
+            },
+            heroTag: null,
+            child: const Icon(Icons.edit),
+          ),
         ];
       } else {
         if (state == 'Invité(e)') {
@@ -195,23 +223,23 @@ class _DetailspAppState extends State<DetailsApp> {
                     return AlertDialog(
                       title: const Text("Créateur de l'évenement :"),
                       content: Table(
-                        children: const [
+                        children: [
                           TableRow(
                             children: [
-                              Text('Nom : '),
-                              Text('Bourlon'),
+                              const Text('Nom : '),
+                              Text(event.creator.name),
                             ],
                           ),
                           TableRow(
                             children: [
-                              Text('Prénom : '),
-                              Text('Erwan'),
+                              const Text('Prénom : '),
+                              Text(event.creator.firstname),
                             ],
                           ),
                           TableRow(
                             children: [
-                              Text('Courriel : '),
-                              Text('erwan.bourlon8@etu.univ-lorraine.fr'),
+                              const Text('Courriel : '),
+                              Text(event.creator.email),
                             ],
                           )
                         ],
@@ -230,8 +258,7 @@ class _DetailspAppState extends State<DetailsApp> {
                   },
                 );
                 if (createur == true) {
-                  FlutterClipboard.copy('erwan.bourlon8@etu.univ-lorraine.fr')
-                      .then((value) {
+                  FlutterClipboard.copy(event.creator.email).then((value) {
                     const snackBar = SnackBar(
                         content: Text('Le courriel a bien été copié !'));
                     ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -261,12 +288,9 @@ class _DetailspAppState extends State<DetailsApp> {
                                 backgroundColor: const Color(0Xff11998E),
                                 onSubmit: () {
                                   setState(() {
-                                    eventProvider.addParticipant(
-                                        event,
-                                        Participant(
-                                            name: 'Erwan Bourlon',
-                                            state: 'Présent(e)',
-                                            email: 'erwan@bourlon.fr'));
+                                    eventProvider.responseToInvitation(
+                                        event, "accepted");
+                                    event.status = "accepted";
                                   });
                                   Navigator.pop(context);
                                   putComment(
@@ -299,12 +323,9 @@ class _DetailspAppState extends State<DetailsApp> {
                                 backgroundColor: Colors.red,
                                 onSubmit: () {
                                   setState(() {
-                                    eventProvider.addParticipant(
-                                        event,
-                                        Participant(
-                                            name: 'Erwan Bourlon',
-                                            state: 'Absent(e)',
-                                            email: 'erwan@bourlon.fr'));
+                                    eventProvider.responseToInvitation(
+                                        event, "declined");
+                                    event.status = "declined";
                                   });
                                   Navigator.pop(context);
                                   putComment(
@@ -348,23 +369,23 @@ class _DetailspAppState extends State<DetailsApp> {
                     return AlertDialog(
                       title: const Text("Créateur de l'évenement :"),
                       content: Table(
-                        children: const [
+                        children: [
                           TableRow(
                             children: [
-                              Text('Nom : '),
-                              Text('Bourlon'),
+                              const Text('Nom : '),
+                              Text(event.creator.name),
                             ],
                           ),
                           TableRow(
                             children: [
-                              Text('Prénom : '),
-                              Text('Erwan'),
+                              const Text('Prénom : '),
+                              Text(event.creator.firstname),
                             ],
                           ),
                           TableRow(
                             children: [
-                              Text('Courriel : '),
-                              Text('erwan.bourlon8@etu.univ-lorraine.fr'),
+                              const Text('Courriel : '),
+                              Text(event.creator.email),
                             ],
                           )
                         ],
@@ -383,8 +404,7 @@ class _DetailspAppState extends State<DetailsApp> {
                   },
                 );
                 if (createur == true) {
-                  FlutterClipboard.copy('erwan.bourlon8@etu.univ-lorraine.fr')
-                      .then((value) {
+                  FlutterClipboard.copy(event.creator.email).then((value) {
                     const snackBar = SnackBar(
                         content: Text('Le courriel a bien été copié !'));
                     ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -464,39 +484,51 @@ class _DetailspAppState extends State<DetailsApp> {
     }
 
     return Scaffold(
-      appBar:
-          AppBar(title: const Text('Reunionou'), centerTitle: true, actions: [
-        FutureBuilder<String>(
-            future: _fetchState(),
-            builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-              if (snapshot.hasData) {
-                String actualState = snapshot.data as String;
-                switch (actualState) {
-                  case 'Présent(e)':
-                    return const Icon(Icons.beenhere, color: Colors.green);
-                  case 'Absent(e)':
-                    return const Icon(Icons.block, color: Colors.red);
-                  case 'Invité(e)':
-                    return const Icon(Icons.live_help, color: Colors.amber);
+      appBar: AppBar(
+        title: const Text('Reunionou'),
+        centerTitle: true,
+        actions: [
+          FutureBuilder<String>(
+              future: _fetchState(),
+              builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+                if (snapshot.hasData) {
+                  String actualState = snapshot.data as String;
+                  switch (actualState) {
+                    case 'Présent(e)':
+                      return const Icon(Icons.beenhere, color: Colors.green);
+                    case 'Absent(e)':
+                      return const Icon(Icons.block, color: Colors.red);
+                    case 'Invité(e)':
+                      return const Icon(Icons.live_help, color: Colors.amber);
+                  }
                 }
-              }
-              return Container();
-            }),
-        FutureBuilder<String>(
-            future: _fetchState(),
-            builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-              if (snapshot.hasData) {
-                String actualState = snapshot.data as String;
-                if (actualState != "Créateur") {
-                  return Center(
-                    child: Text(actualState,
-                        style: const TextStyle(color: Colors.grey)),
-                  );
+                return Container();
+              }),
+          FutureBuilder<String>(
+              future: _fetchState(),
+              builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+                if (snapshot.hasData) {
+                  String actualState = snapshot.data as String;
+                  if (actualState != "Créateur") {
+                    return Center(
+                      child: Text(actualState,
+                          style: const TextStyle(color: Colors.grey)),
+                    );
+                  }
                 }
+                return Container();
+              }),
+        ],
+        leading: IconButton(
+            onPressed: () {
+              if (updated) {
+                Navigator.of(context).pop(event);
+              } else {
+                Navigator.of(context).pop();
               }
-              return Container();
-            }),
-      ]),
+            },
+            icon: const Icon(Icons.arrow_back)),
+      ),
       floatingActionButton: FutureBuilder<String>(
           future: _fetchState(),
           builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
@@ -563,6 +595,17 @@ class _DetailspAppState extends State<DetailsApp> {
                     return Container();
                   }
                 }),
+            // Padding(
+            //   padding: const EdgeInsets.all(40),
+            //   child: Container(
+            //     decoration: BoxDecoration(
+            //       color: const Color(0xff6594C0),
+            //       borderRadius: BorderRadius.circular(8),
+            //     ),
+            //     child:
+            //         MapPreview(LatLng(47.10237958157978, 2.5262953592295556)),
+            //   ),
+            // ),
             FutureBuilder<List<Comment>>(
                 future: _fetchComments(),
                 builder: (BuildContext context,

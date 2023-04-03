@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reunionou/main.dart';
 
 // TODO : mdp > 8 characters
 class Profile extends StatefulWidget {
@@ -35,6 +36,7 @@ class _ProfileState extends State<Profile> {
               child: Column(
                 children: [
                   TextFormField(
+                    initialValue: eventProvider.myName,
                     decoration: const InputDecoration(
                       labelText: "Nouveau nom",
                     ),
@@ -49,6 +51,7 @@ class _ProfileState extends State<Profile> {
                     },
                   ),
                   TextFormField(
+                    initialValue: eventProvider.myFirstname,
                     decoration: const InputDecoration(
                       labelText: "Nouveau prénom",
                     ),
@@ -68,13 +71,17 @@ class _ProfileState extends State<Profile> {
                       onPressed: () {
                         if (formKeyName.currentState!.validate()) {
                           formKeyName.currentState!.save();
-                          // TODO : post save name/firstname
-                          print(
-                              'SAVING ---nom:"$name"---prénom:"$firstname"---');
-                          const snackBar = SnackBar(
-                              content:
-                                  Text('Nouveaux nom et prénom sauvegardés'));
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                          final response =
+                              eventProvider.updateName(name!, firstname!);
+                          response.then((value) {
+                            if (value == 200) {
+                              const snackBar = SnackBar(
+                                  content: Text(
+                                      'Nouveaux nom et prénom sauvegardés'));
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackBar);
+                            }
+                          });
                         }
                       },
                       child: const Text('Sauvegarder'),
@@ -126,11 +133,17 @@ class _ProfileState extends State<Profile> {
                       onPressed: () {
                         if (formKeyPassword.currentState!.validate()) {
                           formKeyPassword.currentState!.save();
-                          // TODO : post save password
-                          print('SAVING --password:"$password"---');
-                          const snackBar = SnackBar(
-                              content: Text('Nouveau mot de passe sauvegardé'));
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                          final response =
+                              eventProvider.updatePassword(password!);
+                          response.then((value) {
+                            if (value == 200) {
+                              const snackBar = SnackBar(
+                                  content:
+                                      Text('Nouveau mot de passe sauvegardé'));
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackBar);
+                            }
+                          });
                         }
                       },
                       child: const Text('Sauvegarder'),
