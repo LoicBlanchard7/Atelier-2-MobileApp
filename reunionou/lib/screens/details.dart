@@ -96,6 +96,7 @@ class _DetailspAppState extends State<DetailsApp> {
         onPressed: () {
           putComment('Laisser un commentaire');
         },
+        heroTag: null,
         child: const Icon(Icons.chat_bubble),
       );
       FloatingActionButton map = FloatingActionButton(
@@ -106,6 +107,7 @@ class _DetailspAppState extends State<DetailsApp> {
                   builder: (context) => MapPreview(
                       LatLng(47.10237958157978, 2.5262953592295556))));
         },
+        heroTag: null,
         child: const Icon(Icons.pin_drop_outlined),
       );
       if (state == "Créateur") {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reunionou/proviers/event_provider.dart';
+import 'package:reunionou/proviers/weather_provider.dart';
 import 'package:reunionou/screens/signin.dart';
 
 void main() async {
@@ -8,3 +9,4 @@ void main() async {
 }
 
 EventProvider eventProvider = EventProvider();
+WeatherProvider weatherProvider = WeatherProvider();
