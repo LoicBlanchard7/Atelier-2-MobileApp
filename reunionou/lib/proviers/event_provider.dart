@@ -140,19 +140,28 @@ class EventProvider extends ChangeNotifier {
     return listParticipants;
   }
 
-  Future<List<Participant>> getAllParticipants() async {
+  Future<List<Participant>> getAllParticipants(
+      List<Participant> actuels) async {
     List<Participant> listParticipants = [];
     final url = Uri.parse('$urlPrefix/auth');
     final headers = {"Authorization": "Bearer $accessToken"};
     final response = await get(url, headers: headers);
     for (var user in jsonDecode(response.body)['users']) {
       if (myUID != user['uid']) {
-        listParticipants.add(Participant(
-          email: user['email'],
-          name: "${user['firstname']} ${user['name']}",
-          state: '',
-          uid: user['uid'],
-        ));
+        bool pasEncoreInvite = true;
+        for (var invites in actuels) {
+          if (invites.uid == user['uid']) {
+            pasEncoreInvite = false;
+          }
+        }
+        if (pasEncoreInvite) {
+          listParticipants.add(Participant(
+            email: user['email'],
+            name: "${user['firstname']} ${user['name']}",
+            state: '',
+            uid: user['uid'],
+          ));
+        }
       }
     }
     notifyListeners();
@@ -193,7 +202,7 @@ class EventProvider extends ChangeNotifier {
           comment: comment['content']));
     }
     notifyListeners();
-    return list;
+    return list.reversed.toList();
   }
 
   void addComment(Event event, Comment comment) async {

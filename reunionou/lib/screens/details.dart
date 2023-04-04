@@ -23,6 +23,7 @@ class DetailsApp extends StatefulWidget {
 class _DetailspAppState extends State<DetailsApp> {
   Event event;
   _DetailspAppState(this.event);
+  List<Participant> participantsActuels = [];
 
   Future<String> _fetchState() async {
     switch (event.status) {
@@ -46,7 +47,7 @@ class _DetailspAppState extends State<DetailsApp> {
   }
 
   Future<List<Participant>> _fetchAllParticipants() async {
-    return eventProvider.getAllParticipants();
+    return eventProvider.getAllParticipants(participantsActuels);
   }
 
   @override
@@ -57,25 +58,40 @@ class _DetailspAppState extends State<DetailsApp> {
       final comment = await showDialog<bool>(
         context: context,
         builder: (context) {
-          return AlertDialog(
-            title: Text(titre),
-            content: TextField(
-              controller: commentController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Commentaire',
+          final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+          return Form(
+            key: formKey,
+            child: AlertDialog(
+              title: Text(titre),
+              content: TextFormField(
+                controller: commentController,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Commentaire',
+                ),
+                validator: (value) {
+                  if ('$value'.length > 255) {
+                    return 'Nombre maximum de caractères : 256';
+                  } else {
+                    return null;
+                  }
+                },
               ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context, false),
+                  child: const Text('Non'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    if (formKey.currentState!.validate()) {
+                      Navigator.pop(context, true);
+                    }
+                  },
+                  child: const Text('Poster'),
+                ),
+              ],
             ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context, false),
-                child: const Text('Non'),
-              ),
-              TextButton(
-                onPressed: () => Navigator.pop(context, true),
-                child: const Text('Poster'),
-              ),
-            ],
           );
         },
       );
@@ -594,7 +610,7 @@ class _DetailspAppState extends State<DetailsApp> {
                 builder: (BuildContext context,
                     AsyncSnapshot<List<Participant>> snapshot) {
                   if (snapshot.hasData) {
-                    List<Participant> list = snapshot.data as List<Participant>;
+                    participantsActuels = snapshot.data as List<Participant>;
                     return Padding(
                       padding: const EdgeInsets.all(40),
                       child: Container(
@@ -604,7 +620,7 @@ class _DetailspAppState extends State<DetailsApp> {
                         ),
                         child: Table(
                           border: TableBorder.all(),
-                          children: affichageParticipants(list),
+                          children: affichageParticipants(participantsActuels),
                         ),
                       ),
                     );

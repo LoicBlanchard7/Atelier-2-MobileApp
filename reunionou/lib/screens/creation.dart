@@ -131,7 +131,15 @@ class _EventCreationState extends State<EventCreation> {
                   decoration: const InputDecoration(
                     labelText: "Titre de l'évenement",
                   ),
-                  validator: (value) => checkFormField(value),
+                  validator: (value) {
+                    if (value == "") {
+                      return "Merci de remplir ce champ";
+                    }
+                    if ('$value'.length > 128) {
+                      return "Nombre maximum de caractères : 128";
+                    }
+                    return null;
+                  },
                   onSaved: (value) {
                     title = value;
                   },
@@ -140,7 +148,15 @@ class _EventCreationState extends State<EventCreation> {
                   decoration: const InputDecoration(
                     labelText: "Description de l'évenement",
                   ),
-                  validator: (value) => checkFormField(value),
+                  validator: (value) {
+                    if (value == "") {
+                      return "Merci de remplir ce champ";
+                    }
+                    if ('$value'.length > 255) {
+                      return "Nombre maximum de caractères : 256";
+                    }
+                    return null;
+                  },
                   onSaved: (value) {
                     description = value;
                   },

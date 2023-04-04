@@ -148,7 +148,15 @@ class _EventUpdateState extends State<EventUpdate> {
                   decoration: const InputDecoration(
                     labelText: "Description de l'évenement",
                   ),
-                  validator: (value) => checkFormField(value),
+                  validator: (value) {
+                    if (value == "") {
+                      return "Merci de remplir ce champ";
+                    }
+                    if ('$value'.length > 255) {
+                      return "Nombre maximum de caractères : 256";
+                    }
+                    return null;
+                  },
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 20),
