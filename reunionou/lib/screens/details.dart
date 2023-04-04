@@ -9,9 +9,8 @@ import 'package:reunionou/main.dart';
 import 'package:reunionou/models/comment.dart';
 import 'package:reunionou/models/event.dart';
 import 'package:reunionou/models/participant.dart';
-import 'package:reunionou/screens/Widget/test_map-1.dart';
+import 'package:reunionou/screens/details_map.dart';
 import 'package:reunionou/screens/modification.dart';
-import 'package:syncfusion_flutter_maps/maps.dart';
 
 class DetailsApp extends StatefulWidget {
   Event event;
@@ -99,9 +98,21 @@ class _DetailspAppState extends State<DetailsApp> {
         },
         child: const Icon(Icons.chat_bubble),
       );
+      FloatingActionButton map = FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => MapPreview(
+                      LatLng(47.10237958157978, 2.5262953592295556))));
+        },
+        child: const Icon(Icons.pin_drop_outlined),
+      );
       if (state == "Créateur") {
         return [
           chat,
+          const SizedBox(height: 10),
+          map,
           const SizedBox(height: 10),
           FloatingActionButton(
             onPressed: () async {
@@ -214,6 +225,8 @@ class _DetailspAppState extends State<DetailsApp> {
         if (state == 'Invité(e)') {
           return [
             chat,
+            const SizedBox(height: 10),
+            map,
             const SizedBox(height: 10),
             FloatingActionButton(
               onPressed: () async {
@@ -360,6 +373,8 @@ class _DetailspAppState extends State<DetailsApp> {
         } else {
           return [
             chat,
+            const SizedBox(height: 10),
+            map,
             const SizedBox(height: 10),
             FloatingActionButton(
               onPressed: () async {
@@ -595,17 +610,6 @@ class _DetailspAppState extends State<DetailsApp> {
                     return Container();
                   }
                 }),
-            // Padding(
-            //   padding: const EdgeInsets.all(40),
-            //   child: Container(
-            //     decoration: BoxDecoration(
-            //       color: const Color(0xff6594C0),
-            //       borderRadius: BorderRadius.circular(8),
-            //     ),
-            //     child:
-            //         MapPreview(LatLng(47.10237958157978, 2.5262953592295556)),
-            //   ),
-            // ),
             FutureBuilder<List<Comment>>(
                 future: _fetchComments(),
                 builder: (BuildContext context,

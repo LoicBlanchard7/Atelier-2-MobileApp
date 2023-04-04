@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reunionou/main.dart';
 
-// TODO : mdp > 8 characters
 class Profile extends StatefulWidget {
   const Profile({super.key});
 
@@ -102,6 +101,9 @@ class _ProfileState extends State<Profile> {
                       password = value;
                       if (value == "") {
                         return "Merci de remplir ce champ";
+                      }
+                      if (value!.length < 8) {
+                        return "Votre mot de passe doit contenir au moins 8 caractères";
                       }
                       return null;
                     },
