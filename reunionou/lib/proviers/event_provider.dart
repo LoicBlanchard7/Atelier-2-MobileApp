@@ -176,7 +176,7 @@ class EventProvider extends ChangeNotifier {
     for (var participant in jsonDecode(response.body)['participants']) {
       listParticipants.add(Participant(
         state: participant['status'],
-        name: "${participant['firstname']} ${participant['name']}",
+        name: "${participant['name']}",
         email: 'email',
         uid: participant['uid'],
       ));
