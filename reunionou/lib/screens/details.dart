@@ -43,7 +43,7 @@ class _DetailspAppState extends State<DetailsApp> {
       case 'accepted':
         return 'Présent(e)';
       case 'pending':
-        return 'En attente';
+        return 'Invité(e)';
       default:
         return 'Invité(e)';
     }
