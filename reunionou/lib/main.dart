@@ -4,7 +4,6 @@ import 'package:reunionou/proviers/weather_provider.dart';
 import 'package:reunionou/screens/signin.dart';
 
 void main() async {
-  // TODO : sécuriser les entrées (connection/création/chat)
   runApp(const SignInApp());
 }
 

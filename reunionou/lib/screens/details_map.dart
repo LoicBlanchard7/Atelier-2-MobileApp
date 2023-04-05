@@ -1,10 +1,14 @@
-// ignore_for_file: file_names, must_be_immutable, no_logic_in_create_state, depend_on_referenced_packages
+// ignore_for_file: file_names, must_be_immutable, no_logic_in_create_state, depend_on_referenced_packages, slash_for_doc_comments
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:reunionou/main.dart';
 
+/**
+ * Page permettant d'afficher une carte avec le lieu de l'évènement et la météo actuelle
+ * @author : ErwanBourlon
+ */
 class MapPreview extends StatefulWidget {
   LatLng center;
   MapPreview(this.center, {super.key});
@@ -19,11 +23,6 @@ class _MappPreviewState extends State<MapPreview> {
 
   late String temperature;
   late String windspeed;
-
-  Future<List<double>> _fetchWeather() {
-    return weatherProvider.getWeather(
-        center.latitude.toString(), center.longitude.toString());
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +56,8 @@ class _MappPreviewState extends State<MapPreview> {
             ],
           )),
           FutureBuilder<List<double>>(
-              future: _fetchWeather(),
+              future: weatherProvider.getWeather(
+                  center.latitude.toString(), center.longitude.toString()),
               builder:
                   (BuildContext context, AsyncSnapshot<List<double>> snapshot) {
                 if (snapshot.hasData) {
@@ -65,22 +65,6 @@ class _MappPreviewState extends State<MapPreview> {
                   return Container(
                     decoration: const BoxDecoration(color: Colors.blue),
                     child: Table(children: [
-                      // const TableRow(children: [
-                      //   Center(
-                      //       child: Padding(
-                      //     padding: EdgeInsets.only(top: 8.0),
-                      //     child: Text(
-                      //       'Température',
-                      //       style: TextStyle(color: Colors.white, fontSize: 30),
-                      //     ),
-                      //   )),
-                      //   Center(
-                      //       child: Padding(
-                      //     padding: EdgeInsets.only(top: 8.0),
-                      //     child: Text('Vent',
-                      //         style: TextStyle(color: Colors.white, fontSize: 30)),
-                      //   )),
-                      // ]),
                       TableRow(children: [
                         Center(
                             child: Padding(

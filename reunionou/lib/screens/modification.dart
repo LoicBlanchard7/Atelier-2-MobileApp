@@ -1,4 +1,4 @@
-// ignore_for_file: no_logic_in_create_state, must_be_immutable
+// ignore_for_file: no_logic_in_create_state, must_be_immutable, slash_for_doc_comments
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -6,6 +6,10 @@ import 'package:reunionou/main.dart';
 import 'package:reunionou/models/event.dart';
 import 'package:reunionou/screens/map.dart';
 
+/**
+ * Page permettant de modifier les informations d'un évènement (titre éxcepté)
+ * @author : ErwanBourlon
+ */
 class EventUpdate extends StatefulWidget {
   Event event;
   EventUpdate(this.event, {super.key});
@@ -22,6 +26,12 @@ class _EventUpdateState extends State<EventUpdate> {
   TextEditingController timeInput = TextEditingController();
   TextEditingController descriptionInput = TextEditingController();
 
+  /**
+   * Méthode permettant de vérifier si une valeur numéraire s'écrit en un ou deux 
+   * chiffres
+   * @param time valeur numéraire à traiter
+   * @return la valeur numéraire avec au moins un chiffre sous format String
+   */
   String showTime(int time) {
     if (time.toString().length > 1) {
       return '$time';
@@ -30,6 +40,10 @@ class _EventUpdateState extends State<EventUpdate> {
     }
   }
 
+  /**
+   * Méthode permettant d'initialiser les valeurs des champs d'adresse, de date,
+   * d'heure et de description sur base des informations de l'évènement
+   */
   @override
   void initState() {
     addressInput.text =
@@ -45,6 +59,12 @@ class _EventUpdateState extends State<EventUpdate> {
   Widget build(BuildContext context) {
     final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
+    /**
+     * Methode permettant de vérifier si un champ texte est vide ou non et retourne
+     * un message d'alerte si besoin
+     * @param value Valeur du champ texte à vérifier
+     * @return un potentiel message d'alerte de type String demandant de remplir le champ
+     */
     String? checkFormField(value) {
       if (value == "") {
         return "Merci de remplir ce champ";
@@ -68,6 +88,7 @@ class _EventUpdateState extends State<EventUpdate> {
             padding: const EdgeInsets.all(50),
             child: Column(
               children: [
+                // Label : Titre de l'évènement
                 Container(
                   alignment: Alignment.center,
                   padding: const EdgeInsets.all(10),
@@ -79,6 +100,7 @@ class _EventUpdateState extends State<EventUpdate> {
                         fontSize: 30),
                   ),
                 ),
+                // Champ de position de l'évènement
                 TextFormField(
                   controller: addressInput,
                   decoration: const InputDecoration(
@@ -102,6 +124,7 @@ class _EventUpdateState extends State<EventUpdate> {
                         }));
                   },
                 ),
+                // Champ de date de l'évènement
                 TextFormField(
                   controller: dateInput,
                   decoration: const InputDecoration(
@@ -125,6 +148,7 @@ class _EventUpdateState extends State<EventUpdate> {
                     }
                   },
                 ),
+                // Champ d'heure de l'évènement
                 TextFormField(
                     controller: timeInput,
                     decoration: const InputDecoration(
@@ -143,6 +167,7 @@ class _EventUpdateState extends State<EventUpdate> {
                         timeInput.text = DateFormat('HH:mm').format(time);
                       }
                     }),
+                // Champ de description de l'évènement
                 TextFormField(
                   controller: descriptionInput,
                   decoration: const InputDecoration(
@@ -158,6 +183,7 @@ class _EventUpdateState extends State<EventUpdate> {
                     return null;
                   },
                 ),
+                // Bouton de sauvegarde
                 Padding(
                   padding: const EdgeInsets.only(top: 20),
                   child: ElevatedButton(

@@ -1,6 +1,11 @@
+// ignore_for_file: slash_for_doc_comments
 import 'package:flutter/material.dart';
 import 'package:open_street_map_search_and_pick/open_street_map_search_and_pick.dart';
 
+/**
+ * Page permettant de choisir une localisation pour la création d'un nouvel Event
+ * @author : ErwanBourlon
+ */
 class Map extends StatefulWidget {
   const Map({Key? key}) : super(key: key);
 

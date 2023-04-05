@@ -1,7 +1,13 @@
+// ignore_for_file: slash_for_doc_comments
 import 'package:reunionou/models/creator.dart';
 
+/**
+ * Classe modèle permettant de définir un évènement
+ * @author : ErwanBourlon
+ */
 class Event {
   Creator creator;
+  // Statut de l'évènement par rapport à l'utilisateur connécté (creator/declined/accepted/pending)
   String status;
   String eid;
   String title;

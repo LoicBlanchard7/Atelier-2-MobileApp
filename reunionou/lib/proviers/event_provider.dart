@@ -1,5 +1,5 @@
+// ignore_for_file: slash_for_doc_comments
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:reunionou/models/comment.dart';
@@ -7,6 +7,10 @@ import 'package:reunionou/models/creator.dart';
 import 'package:reunionou/models/event.dart';
 import 'package:reunionou/models/participant.dart';
 
+/**
+ * Classe de provider permettant de discuter avec l'API créée pour gérer la base de donnée de Reunionou
+ * @author : ErwanBourlon
+ */
 class EventProvider extends ChangeNotifier {
   String myUID = "";
   String myEmail = "";
@@ -16,6 +20,12 @@ class EventProvider extends ChangeNotifier {
   List<Event> _listevent = [];
   static const urlPrefix = 'http://iut.netlor.fr';
 
+  /**
+   * Méthode permettant d'envoyer une demande de connection et de récupérer l'access_token
+   * @param email Courriel du compte à connecter  
+   * @param password Mot de passe du compte à connecter  
+   * @return le code de retour de la requête
+   */
   Future<int> connect(String email, String password) async {
     final url = Uri.parse('$urlPrefix/auth/signin');
     final headers = {"Content-type": "application/json"};
@@ -34,6 +44,12 @@ class EventProvider extends ChangeNotifier {
     return response.statusCode;
   }
 
+  /**
+   * Méthode permettant mettre à jour le nom et prénom du compte utilisateur
+   * @param name Nom du compte mettre à jour  
+   * @param firstname Préom du compte mettre à jour  
+   * @return le code de retour de la requête
+   */
   Future<int> updateName(String name, String firstname) async {
     final url = Uri.parse('$urlPrefix/auth/updateUser');
     final headers = {"Content-type": "application/json"};
@@ -47,6 +63,11 @@ class EventProvider extends ChangeNotifier {
     return response.statusCode;
   }
 
+  /**
+   * Méthode permettant mettre à jour le mot de passe du compte utilisateur
+   * @param password Mot de passe du compte mettre à jour  
+   * @return le code de retour de la requête
+   */
   Future<int> updatePassword(String password) async {
     final url = Uri.parse('$urlPrefix/auth/updateUser');
     final headers = {"Content-type": "application/json"};
@@ -56,6 +77,10 @@ class EventProvider extends ChangeNotifier {
     return response.statusCode;
   }
 
+  /**
+   * Méthode permettant de récupérer la liste des évènements de l'utilisateur
+   * @return la liste des évènements demandée
+   */
   Future<List<Event>> getEvents() async {
     if (_listevent.isEmpty) {
       List<Event> events = [];
@@ -102,6 +127,10 @@ class EventProvider extends ChangeNotifier {
     return _listevent;
   }
 
+  /**
+   * Méthode permettant de créer et d'ajouter un évènement
+   * @param event Evènement à ajouter
+   */
   void addEvents(Event event) async {
     _listevent.add(event);
     final url = Uri.parse('$urlPrefix/event/createEvent');
@@ -111,10 +140,15 @@ class EventProvider extends ChangeNotifier {
     };
     final json =
         '{"title":"${event.title}","description":"${event.description}","date":"${event.time}","posX":${event.address.split('"')[1]},"posY":${event.address.split('"')[3]},"uid": "$myUID"}';
-    await post(url, headers: headers, body: json);
+    final response = await post(url, headers: headers, body: json);
+    event.eid = jsonDecode(response.body)['eid'];
     notifyListeners();
   }
 
+  /**
+   * Méthode permettant de mettre à jour les informations un évènement
+   * @param event Evènement à mettre jour
+   */
   void updateEvent(Event event) async {
     _listevent[_listevent.indexWhere((element) => element.eid == event.eid)] =
         event;
@@ -129,6 +163,11 @@ class EventProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /**
+   * Méthode permettant de récupérer la liste des participants d'un évènements
+   * @param event Evènement dont il est question 
+   * @return la liste des participants demandée
+   */
   Future<List<Participant>> getParticipants(Event event) async {
     List<Participant> listParticipants = [];
     final url = Uri.parse('$urlPrefix/Participants/event/${event.eid}');
@@ -146,6 +185,12 @@ class EventProvider extends ChangeNotifier {
     return listParticipants;
   }
 
+  /**
+   * Méthode permettant de récupérer la liste de tous les utilisateurs (excépté
+   * ceux que l'on passe en paramètre)
+   * @param actuels Liste d'utilisateurs que l'on excluera de la liste retournée
+   * @return la liste des utilisateurs demandée
+   */
   Future<List<Participant>> getAllParticipants(
       List<Participant> actuels) async {
     List<Participant> listParticipants = [];
@@ -174,6 +219,11 @@ class EventProvider extends ChangeNotifier {
     return listParticipants;
   }
 
+  /**
+   * Méthode permettant d'accépter ou de refuser une invitation à un évènement
+   * @param event Evènement dont il est question
+   * @param status Réponse à l'invitation
+   */
   void responseToInvitation(Event event, String status) async {
     final url = Uri.parse('$urlPrefix/participants/accept');
     final headers = {
@@ -185,6 +235,11 @@ class EventProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /**
+   * Méthode permettant d'inviter un utilisateur à un évènement
+   * @param event Evènement dont il est question
+   * @param userToInvite Utilisateur à inviter
+   */
   void inviteToEvent(Event event, Participant userToInvite) async {
     final url = Uri.parse('$urlPrefix/participants/add');
     final headers = {
@@ -197,6 +252,11 @@ class EventProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /**
+   * Méthode permettant de récupérer la liste des commentaires d'un évènements
+   * @param event Evènement dont il est question 
+   * @return la liste des commentaires demandée
+   */
   Future<List<Comment>> getComments(Event event) async {
     final url =
         Uri.parse('$urlPrefix//participants/comment/getComment/${event.eid}');
@@ -211,6 +271,11 @@ class EventProvider extends ChangeNotifier {
     return list.reversed.toList();
   }
 
+  /**
+   * Méthode permettant d'ajouter un commentaire à un évènement
+   * @param event Evènement dont il est question
+   * @param comment Commentaire à poster
+   */
   void addComment(Event event, Comment comment) async {
     final url = Uri.parse('$urlPrefix/Participants/comment/add');
     final headers = {

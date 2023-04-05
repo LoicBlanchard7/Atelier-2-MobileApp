@@ -1,4 +1,4 @@
-// ignore_for_file: must_be_immutable, no_logic_in_create_state
+// ignore_for_file: must_be_immutable, no_logic_in_create_state, slash_for_doc_comments
 
 import 'package:flutter/material.dart';
 import 'package:gradient_slide_to_act/gradient_slide_to_act.dart';
@@ -12,6 +12,10 @@ import 'package:reunionou/models/participant.dart';
 import 'package:reunionou/screens/details_map.dart';
 import 'package:reunionou/screens/modification.dart';
 
+/**
+ * Page permettant d'afficher un évènement et d'intéragir avec
+ * @author : ErwanBourlon
+ */
 class DetailsApp extends StatefulWidget {
   Event event;
   DetailsApp(this.event, {super.key});
@@ -25,6 +29,11 @@ class _DetailspAppState extends State<DetailsApp> {
   _DetailspAppState(this.event);
   List<Participant> participantsActuels = [];
 
+  /**
+   * Méthode permettant de controller si l'évènement traité à été créé par l'utilisateur
+   * ou s'il il y est invité et s'il a répondu présent/absent à l'invitation
+   * @return le status de l'utilisateur vis-à-vis de l'évènement
+   */
   Future<String> _fetchState() async {
     switch (event.status) {
       case 'creator':
@@ -38,21 +47,13 @@ class _DetailspAppState extends State<DetailsApp> {
     }
   }
 
-  Future<List<Participant>> _fetchParticipants() async {
-    return eventProvider.getParticipants(event);
-  }
-
-  Future<List<Comment>> _fetchComments() async {
-    return eventProvider.getComments(event);
-  }
-
-  Future<List<Participant>> _fetchAllParticipants() async {
-    return eventProvider.getAllParticipants(participantsActuels);
-  }
-
   @override
   Widget build(BuildContext context) {
     bool updated = false;
+    /**
+     * Méthode permettant d'afficher une pop-up pour poster un commentaire sur l'évènement
+     * @param titre Phrase à afficher en guise de titre pour la pop-up
+     */
     Future<void> putComment(String titre) async {
       TextEditingController commentController = TextEditingController();
       final comment = await showDialog<bool>(
@@ -107,6 +108,12 @@ class _DetailspAppState extends State<DetailsApp> {
       }
     }
 
+    /**
+     * Méthode permettant de choisir lesquels boutons afficher en fonction de si l'utilisateur
+     * est le créateur de l'évènement ou invité (et si il a déjà répondu à l'invitation)
+     * @param state le status représentant si l'utilisateur est créateur ou invité et s'il a répondu
+     * @return un tableau de widgets contenants les boutons adéquats à la situation
+     */
     List<Widget> getFloatingActionButtons(String state) {
       FloatingActionButton chat = FloatingActionButton(
         onPressed: () {
@@ -175,7 +182,8 @@ class _DetailspAppState extends State<DetailsApp> {
                   return AlertDialog(
                     title: const Text("Inviter des utilisateurs"),
                     content: FutureBuilder<List<Participant>>(
-                        future: _fetchAllParticipants(),
+                        future: eventProvider
+                            .getAllParticipants(participantsActuels),
                         builder: (BuildContext context,
                             AsyncSnapshot<List<Participant>> snapshot) {
                           if (snapshot.hasData) {
@@ -452,6 +460,11 @@ class _DetailspAppState extends State<DetailsApp> {
       }
     }
 
+    /**
+     * Méthode permettant de transformer des Participant en TableRow
+     * @param participantsList liste des Participant que l'on souhaite afficher
+     * @return une liste de TableRow affichables dans une Table correspondant aux Participant passés en paramètre
+     */
     List<TableRow> affichageParticipants(List<Participant> participantsList) {
       List<TableRow> toReturn = [
         TableRow(children: [
@@ -496,6 +509,11 @@ class _DetailspAppState extends State<DetailsApp> {
       return toReturn;
     }
 
+    /**
+     * Méthode permettant de transformer des Comment en TableRow
+     * @param commentsList liste des Comment que l'on souhaite afficher
+     * @return une liste de Card affichables correspondant aux Comment passés en paramètre
+     */
     List<Card> affichageCommentaires(List<Comment> commentsList) {
       List<Card> toReturn = [];
       for (var comment in commentsList) {
@@ -521,6 +539,7 @@ class _DetailspAppState extends State<DetailsApp> {
         title: const Text('Reunionou'),
         centerTitle: true,
         actions: [
+          // Icone Invité/Présent/Absent
           FutureBuilder<String>(
               future: _fetchState(),
               builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
@@ -537,6 +556,7 @@ class _DetailspAppState extends State<DetailsApp> {
                 }
                 return Container();
               }),
+          // Bandeau Invité/Présent/Absent
           FutureBuilder<String>(
               future: _fetchState(),
               builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
@@ -578,6 +598,7 @@ class _DetailspAppState extends State<DetailsApp> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            // Label : Titre de l'évènement
             Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.all(10),
@@ -589,6 +610,7 @@ class _DetailspAppState extends State<DetailsApp> {
                     fontSize: 30),
               ),
             ),
+            // Label : Date et heure de l'évènement
             Container(
               alignment: Alignment.center,
               // padding: const EdgeInsets.all(15),
@@ -597,6 +619,7 @@ class _DetailspAppState extends State<DetailsApp> {
                 style: const TextStyle(fontSize: 20, color: Colors.grey),
               ),
             ),
+            // Label : Description de l'évènement
             Container(
               alignment: Alignment.topLeft,
               padding: const EdgeInsets.fromLTRB(20, 50, 20, 30),
@@ -605,8 +628,9 @@ class _DetailspAppState extends State<DetailsApp> {
                 style: const TextStyle(fontSize: 20),
               ),
             ),
+            // Affichage des participants
             FutureBuilder<List<Participant>>(
-                future: _fetchParticipants(),
+                future: eventProvider.getParticipants(event),
                 builder: (BuildContext context,
                     AsyncSnapshot<List<Participant>> snapshot) {
                   if (snapshot.hasData) {
@@ -628,8 +652,9 @@ class _DetailspAppState extends State<DetailsApp> {
                     return Container();
                   }
                 }),
+            // Affichage des commentaires
             FutureBuilder<List<Comment>>(
-                future: _fetchComments(),
+                future: eventProvider.getComments(event),
                 builder: (BuildContext context,
                     AsyncSnapshot<List<Comment>> snapshot) {
                   if (snapshot.hasData) {

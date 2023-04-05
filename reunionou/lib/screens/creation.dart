@@ -1,3 +1,4 @@
+// ignore_for_file: slash_for_doc_comments
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:reunionou/main.dart';
@@ -5,6 +6,10 @@ import 'package:reunionou/models/creator.dart';
 import 'package:reunionou/models/event.dart';
 import 'package:reunionou/screens/map.dart';
 
+/**
+ * Page permettant créer un nouvel évènement
+ * @author : ErwanBourlon
+ */
 class EventCreation extends StatefulWidget {
   const EventCreation({super.key});
 
@@ -16,6 +21,9 @@ class _EventCreationState extends State<EventCreation> {
   TextEditingController addressInput = TextEditingController();
   TextEditingController dateInput = TextEditingController();
   TextEditingController timeInput = TextEditingController();
+  /**
+   * Méthode permettant d'initialiser les controlleur des différents champs avec un String vide
+   */
   @override
   void initState() {
     addressInput.text = "";
@@ -31,6 +39,12 @@ class _EventCreationState extends State<EventCreation> {
     String? description;
     String? address;
 
+    /**
+     * Methode permettant de vérifier si un champ texte est vide ou non et retourne
+     * un message d'alerte si besoin
+     * @param value Valeur du champ texte à vérifier
+     * @return un potentiel message d'alerte de type String demandant de remplir le champ
+     */
     String? checkFormField(value) {
       if (value == "") {
         return "Merci de remplir ce champ";
@@ -48,18 +62,13 @@ class _EventCreationState extends State<EventCreation> {
               style: TextStyle(fontFamily: 'PermanentMarker'),
             ),
           ),
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back_rounded),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
         ),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(50),
             child: Column(
               children: [
+                // Champ indiquant le lieu séléctionné et emmenant à la page de séléction
                 TextFormField(
                   controller: addressInput,
                   decoration: const InputDecoration(
@@ -86,6 +95,7 @@ class _EventCreationState extends State<EventCreation> {
                         }));
                   },
                 ),
+                // Champ indiquant la date séléctionnée et faisant apparaitre une pop-up de séléction
                 TextFormField(
                   controller: dateInput,
                   decoration: const InputDecoration(
@@ -109,6 +119,7 @@ class _EventCreationState extends State<EventCreation> {
                     }
                   },
                 ),
+                // Champ indiquant l'heure séléctionnée et faisant apparaitre une pop-up de séléction
                 TextFormField(
                     controller: timeInput,
                     decoration: const InputDecoration(
@@ -127,6 +138,7 @@ class _EventCreationState extends State<EventCreation> {
                         timeInput.text = DateFormat('HH:mm').format(time);
                       }
                     }),
+                // Champ texte pour entrer le titre
                 TextFormField(
                   decoration: const InputDecoration(
                     labelText: "Titre de l'évenement",
@@ -144,6 +156,7 @@ class _EventCreationState extends State<EventCreation> {
                     title = value;
                   },
                 ),
+                // Champ texte pour entrer la description
                 TextFormField(
                   decoration: const InputDecoration(
                     labelText: "Description de l'évenement",
@@ -161,6 +174,7 @@ class _EventCreationState extends State<EventCreation> {
                     description = value;
                   },
                 ),
+                // Bouton créer
                 Padding(
                   padding: const EdgeInsets.only(top: 20),
                   child: ElevatedButton(

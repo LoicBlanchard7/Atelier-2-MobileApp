@@ -1,9 +1,13 @@
-// ignore_for_file: must_be_immutable, no_logic_in_create_state
+// ignore_for_file: must_be_immutable, no_logic_in_create_state, slash_for_doc_comments
 
 import 'package:flutter/material.dart';
 import 'package:reunionou/models/event.dart';
 import 'package:reunionou/screens/details.dart';
 
+/**
+ * Classe permettant créer Widget à partir d'un évènement
+ * @author : ErwanBourlon
+ */
 class EventPreview extends StatefulWidget {
   Event event;
   EventPreview(this.event, {super.key});

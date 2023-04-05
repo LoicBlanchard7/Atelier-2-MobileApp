@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, slash_for_doc_comments
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +6,10 @@ import 'package:reunionou/main.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:reunionou/screens/menu.dart';
 
+/**
+ * Page de connection
+ * @author : ErwanBourlon
+ */
 class SignInApp extends StatelessWidget {
   const SignInApp({super.key});
 
@@ -36,6 +40,10 @@ class _SigInpAppState extends State<MySignInPage> {
   TextEditingController passwordController = TextEditingController();
   bool badPassword = false;
 
+  /**
+   * Méthode permettant d'afficher une page internet retournant sur la WebApp
+   * Reunionou permettant de s'inscrire
+   */
   void _launchUrl() async {
     // TODO : mettre lien inscription WebApp
     String url = "https://www.youtube.com/";
@@ -52,6 +60,7 @@ class _SigInpAppState extends State<MySignInPage> {
         padding: const EdgeInsets.all(10),
         child: ListView(
           children: <Widget>[
+            // Label : Reunionou
             Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.all(10),
@@ -63,6 +72,7 @@ class _SigInpAppState extends State<MySignInPage> {
                     fontSize: 30),
               ),
             ),
+            // Label : Connectez-vous
             Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.all(10),
@@ -71,6 +81,7 @@ class _SigInpAppState extends State<MySignInPage> {
                 style: TextStyle(fontSize: 20),
               ),
             ),
+            // Cham texte : e-mail
             Container(
               padding: const EdgeInsets.all(10),
               child: TextField(
@@ -81,6 +92,7 @@ class _SigInpAppState extends State<MySignInPage> {
                 ),
               ),
             ),
+            // Cham texte : mot de passe
             Container(
               padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
               child: TextField(
@@ -92,6 +104,7 @@ class _SigInpAppState extends State<MySignInPage> {
                 ),
               ),
             ),
+            // Bouton : connection
             Container(
               height: 50,
               padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -117,6 +130,7 @@ class _SigInpAppState extends State<MySignInPage> {
                 },
               ),
             ),
+            // Label : e-mail/mot de passe incorrect
             if (badPassword)
               Container(
                 alignment: Alignment.center,
@@ -129,6 +143,7 @@ class _SigInpAppState extends State<MySignInPage> {
                   ),
                 ),
               ),
+            // Label et bouton : inscrivez-vous
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

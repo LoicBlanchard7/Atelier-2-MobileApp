@@ -1,3 +1,8 @@
+// ignore_for_file: slash_for_doc_comments
+/**
+ * Classe modèle permettant de définir un créateur d'un évènement
+ * @author : ErwanBourlon
+ */
 class Creator {
   String firstname;
   String name;

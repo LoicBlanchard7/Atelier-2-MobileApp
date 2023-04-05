@@ -1,3 +1,4 @@
+// ignore_for_file: slash_for_doc_comments
 import 'package:flutter/material.dart';
 import 'package:reunionou/main.dart';
 import 'package:reunionou/models/event.dart';
@@ -5,6 +6,10 @@ import 'package:reunionou/screens/Widget/event_preview.dart';
 import 'package:reunionou/screens/creation.dart';
 import 'package:reunionou/screens/profile.dart';
 
+/**
+ * Page permettant d'afficher la liste des évènements d'un utilisateur
+ * @author : ErwanBourlon
+ */
 class MenuApp extends StatelessWidget {
   const MenuApp({super.key});
 
@@ -25,6 +30,11 @@ class MySignInPage extends StatefulWidget {
 class _SigInpAppState extends State<MySignInPage> {
   List<Widget> eventWidgetList = [];
 
+  /**
+   * Méthode permettant de transformer des Event en Widget
+   * @param eventsList liste des Event que l'on souhaite afficher
+   * @return une liste de Widget affichables correspondant aux Event passés en paramètre
+   */
   List<Widget> showEvents(List<Event> eventsList) {
     List<Widget> toShowList = [];
     for (var event in eventsList) {
