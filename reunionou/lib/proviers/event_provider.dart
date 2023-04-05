@@ -13,6 +13,7 @@ class EventProvider extends ChangeNotifier {
   String myFirstname = "";
   String myName = "";
   String accessToken = "";
+  List<Event> _listevent = [];
   static const urlPrefix = 'http://iut.netlor.fr';
 
   Future<int> connect(String email, String password) async {
@@ -56,50 +57,53 @@ class EventProvider extends ChangeNotifier {
   }
 
   Future<List<Event>> getEvents() async {
-    List<Event> events = [];
-    // get created events
-    final url = Uri.parse('$urlPrefix/event/getEventByUser/$myUID');
-    final headers = {"Authorization": "Bearer $accessToken"};
-    final response = await get(url, headers: headers);
-    for (var event in jsonDecode(response.body)['events']) {
-      events.add(Event(
-        creator: Creator(
-            firstname: 'Erwan', name: 'Bourlon', email: 'erwan@bourlon.fr'),
-        title: event['title'],
-        description: event['description'],
-        time: DateTime.parse(event['date']),
-        address: "${event['posX']}-${event['posY']}",
-        status: 'creator',
-        eid: event['eid'],
-      ));
+    if (_listevent.isEmpty) {
+      List<Event> events = [];
+      // get created events
+      final url = Uri.parse('$urlPrefix/event/getEventByUser/$myUID');
+      final headers = {"Authorization": "Bearer $accessToken"};
+      final response = await get(url, headers: headers);
+      for (var event in jsonDecode(response.body)['events']) {
+        events.add(Event(
+          creator: Creator(
+              firstname: 'Erwan', name: 'Bourlon', email: 'erwan@bourlon.fr'),
+          title: event['title'],
+          description: event['description'],
+          time: DateTime.parse(event['date']),
+          address: "${event['posX']}-${event['posY']}",
+          status: 'creator',
+          eid: event['eid'],
+        ));
+      }
+      // get invited events
+      final url2 = Uri.parse('$urlPrefix/Participants/user/$myUID');
+      final response2 = await get(url2, headers: headers);
+      for (var event in jsonDecode(response2.body)) {
+        final urlCreator = Uri.parse('$urlPrefix/auth/userId/$myUID');
+        final responseCreator = await get(urlCreator, headers: headers);
+        final decodeResponseCreator = jsonDecode(responseCreator.body);
+        Creator creator = Creator(
+          firstname: decodeResponseCreator['user']['firstname'],
+          name: decodeResponseCreator['user']['name'],
+          email: decodeResponseCreator['user']['email'],
+        );
+        events.add(Event(
+          creator: creator,
+          title: event['event']['title'],
+          description: event['event']['description'],
+          time: DateTime.parse(event['event']['date']),
+          address: "${event['event']['posX']}-${event['event']['posY']}",
+          status: event['status'],
+          eid: event['event']['eid'],
+        ));
+      }
+      _listevent = events;
     }
-    // get invited events
-    final url2 = Uri.parse('$urlPrefix/Participants/user/$myUID');
-    final response2 = await get(url2, headers: headers);
-    for (var event in jsonDecode(response2.body)) {
-      final urlCreator = Uri.parse('$urlPrefix/auth/userId/$myUID');
-      final responseCreator = await get(urlCreator, headers: headers);
-      final decodeResponseCreator = jsonDecode(responseCreator.body);
-      Creator creator = Creator(
-        firstname: decodeResponseCreator['user']['firstname'],
-        name: decodeResponseCreator['user']['name'],
-        email: decodeResponseCreator['user']['email'],
-      );
-      events.add(Event(
-        creator: creator,
-        title: event['event']['title'],
-        description: event['event']['description'],
-        time: DateTime.parse(event['event']['date']),
-        address: "${event['event']['posX']}-${event['event']['posY']}",
-        status: event['status'],
-        eid: event['event']['eid'],
-      ));
-    }
-    notifyListeners();
-    return events;
+    return _listevent;
   }
 
   void addEvents(Event event) async {
+    _listevent.add(event);
     final url = Uri.parse('$urlPrefix/event/createEvent');
     final headers = {
       "Content-type": "application/json",
@@ -112,6 +116,8 @@ class EventProvider extends ChangeNotifier {
   }
 
   void updateEvent(Event event) async {
+    _listevent[_listevent.indexWhere((element) => element.eid == event.eid)] =
+        event;
     final url = Uri.parse('$urlPrefix/event/updateEvent');
     final headers = {
       "Content-type": "application/json",

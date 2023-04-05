@@ -25,10 +25,6 @@ class MySignInPage extends StatefulWidget {
 class _SigInpAppState extends State<MySignInPage> {
   List<Widget> eventWidgetList = [];
 
-  Future<List<Event>> _fetchEvents() async {
-    return eventProvider.getEvents();
-  }
-
   List<Widget> showEvents(List<Event> eventsList) {
     List<Widget> toShowList = [];
     for (var event in eventsList) {
@@ -70,7 +66,7 @@ class _SigInpAppState extends State<MySignInPage> {
         child: const Icon(Icons.add),
       ),
       body: FutureBuilder<List<Event>>(
-        future: _fetchEvents(),
+        future: eventProvider.getEvents(),
         builder: (BuildContext context, AsyncSnapshot<List<Event>> snapshot) {
           if (snapshot.hasData) {
             List<Event> list = snapshot.data as List<Event>;
