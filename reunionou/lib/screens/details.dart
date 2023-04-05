@@ -42,6 +42,8 @@ class _DetailspAppState extends State<DetailsApp> {
         return 'Absent(e)';
       case 'accepted':
         return 'Présent(e)';
+      case 'pending':
+        return 'En attente';
       default:
         return 'Invité(e)';
     }
@@ -141,7 +143,8 @@ class _DetailspAppState extends State<DetailsApp> {
           const SizedBox(height: 10),
           FloatingActionButton(
             onPressed: () async {
-              String link = "https://wawTropBienCetEvent.fr";
+              String link =
+                  "https://webetu.iutnc.univ-lorraine.fr/www/leblanc71u/atelier2/partage/event/${event.eid}";
               final share = await showDialog<bool>(
                 context: context,
                 builder: (context) {
