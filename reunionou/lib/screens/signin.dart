@@ -13,7 +13,7 @@ import 'package:reunionou/screens/menu.dart';
 class SignInApp extends StatelessWidget {
   const SignInApp({super.key});
 
-  static const String _title = 'Connection';
+  static const String _title = 'Connexion';
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +46,8 @@ class _SigInpAppState extends State<MySignInPage> {
    */
   void _launchUrl() async {
     // TODO : mettre lien inscription WebApp
-    String url = "https://www.youtube.com/";
+    String url =
+        "https://webetu.iutnc.univ-lorraine.fr/www/leblanc71u/atelier2/signUp";
     if (!await launchUrl(Uri.parse(url))) {
       if (kDebugMode) {
         print("URL can't be launched.");
@@ -109,7 +110,7 @@ class _SigInpAppState extends State<MySignInPage> {
               height: 50,
               padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
               child: ElevatedButton(
-                child: const Text('Connection'),
+                child: const Text('Connexion'),
                 onPressed: () async {
                   setState(() {
                     final response = eventProvider.connect(
