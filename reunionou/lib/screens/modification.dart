@@ -78,7 +78,7 @@ class _EventUpdateState extends State<EventUpdate> {
         appBar: AppBar(
           title: const Center(
             child: Text(
-              "Modification de l'évenement",
+              "Modification de l'événement",
               style: TextStyle(fontFamily: 'PermanentMarker'),
             ),
           ),
@@ -105,7 +105,7 @@ class _EventUpdateState extends State<EventUpdate> {
                   controller: addressInput,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.pin_drop_outlined),
-                    labelText: "Lieu de l'évenement",
+                    labelText: "Lieu de l'événement",
                   ),
                   readOnly: true,
                   validator: (value) => checkFormField(value),
@@ -129,7 +129,7 @@ class _EventUpdateState extends State<EventUpdate> {
                   controller: dateInput,
                   decoration: const InputDecoration(
                       icon: Icon(Icons.calendar_today),
-                      labelText: "Date de l'évenement"),
+                      labelText: "Date de l'événement"),
                   readOnly: true,
                   validator: (value) => checkFormField(value),
                   onTap: () async {
@@ -153,7 +153,7 @@ class _EventUpdateState extends State<EventUpdate> {
                     controller: timeInput,
                     decoration: const InputDecoration(
                         icon: Icon(Icons.access_time),
-                        labelText: "Heure de l'évenement"),
+                        labelText: "Heure de l'événement"),
                     readOnly: true,
                     validator: (value) => checkFormField(value),
                     onTap: () async {
@@ -171,7 +171,7 @@ class _EventUpdateState extends State<EventUpdate> {
                 TextFormField(
                   controller: descriptionInput,
                   decoration: const InputDecoration(
-                    labelText: "Description de l'évenement",
+                    labelText: "Description de l'événement",
                   ),
                   validator: (value) {
                     if (value == "") {
@@ -207,7 +207,7 @@ class _EventUpdateState extends State<EventUpdate> {
                         Navigator.of(context).pop(event);
                       }
                     },
-                    child: const Text('sauvegarder'),
+                    child: const Text('Sauvegarder'),
                   ),
                 ),
               ],

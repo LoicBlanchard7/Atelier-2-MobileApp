@@ -45,7 +45,6 @@ class _SigInpAppState extends State<MySignInPage> {
    * Reunionou permettant de s'inscrire
    */
   void _launchUrl() async {
-    // TODO : mettre lien inscription WebApp
     String url =
         "https://webetu.iutnc.univ-lorraine.fr/www/leblanc71u/atelier2/signUp";
     if (!await launchUrl(Uri.parse(url))) {

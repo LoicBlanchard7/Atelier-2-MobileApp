@@ -58,7 +58,7 @@ class _EventCreationState extends State<EventCreation> {
         appBar: AppBar(
           title: const Center(
             child: Text(
-              "Création d'un nouvel évenement",
+              "Création d'un nouvel événement",
               style: TextStyle(fontFamily: 'PermanentMarker'),
             ),
           ),
@@ -73,7 +73,7 @@ class _EventCreationState extends State<EventCreation> {
                   controller: addressInput,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.pin_drop_outlined),
-                    labelText: "Lieu de l'évenement",
+                    labelText: "Lieu de l'événement",
                   ),
                   readOnly: true,
                   validator: (value) => checkFormField(value),
@@ -100,7 +100,7 @@ class _EventCreationState extends State<EventCreation> {
                   controller: dateInput,
                   decoration: const InputDecoration(
                       icon: Icon(Icons.calendar_today),
-                      labelText: "Date de l'évenement"),
+                      labelText: "Date de l'événement"),
                   readOnly: true,
                   validator: (value) => checkFormField(value),
                   onTap: () async {
@@ -124,7 +124,7 @@ class _EventCreationState extends State<EventCreation> {
                     controller: timeInput,
                     decoration: const InputDecoration(
                         icon: Icon(Icons.access_time),
-                        labelText: "Heure de l'évenement"),
+                        labelText: "Heure de l'événement"),
                     readOnly: true,
                     validator: (value) => checkFormField(value),
                     onTap: () async {
@@ -141,7 +141,7 @@ class _EventCreationState extends State<EventCreation> {
                 // Champ texte pour entrer le titre
                 TextFormField(
                   decoration: const InputDecoration(
-                    labelText: "Titre de l'évenement",
+                    labelText: "Titre de l'événement",
                   ),
                   validator: (value) {
                     if (value == "") {
@@ -159,7 +159,7 @@ class _EventCreationState extends State<EventCreation> {
                 // Champ texte pour entrer la description
                 TextFormField(
                   decoration: const InputDecoration(
-                    labelText: "Description de l'évenement",
+                    labelText: "Description de l'événement",
                   ),
                   validator: (value) {
                     if (value == "") {
@@ -205,7 +205,7 @@ class _EventCreationState extends State<EventCreation> {
                         Navigator.of(context).pop(event);
                       }
                     },
-                    child: const Text('créer'),
+                    child: const Text('Créer'),
                   ),
                 ),
               ],

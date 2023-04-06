@@ -48,7 +48,7 @@ class _ProfileState extends State<Profile> {
                       ),
                       validator: (value) {
                         if (value == "") {
-                          return "Merci de remplir ce champ";
+                          return "Merci de remplir ce champ.";
                         }
                         return null;
                       },
@@ -63,7 +63,7 @@ class _ProfileState extends State<Profile> {
                       ),
                       validator: (value) {
                         if (value == "") {
-                          return "Merci de remplir ce champ";
+                          return "Merci de remplir ce champ.";
                         }
                         return null;
                       },
@@ -109,10 +109,10 @@ class _ProfileState extends State<Profile> {
                       validator: (value) {
                         password = value;
                         if (value == "") {
-                          return "Merci de remplir ce champ";
+                          return "Merci de remplir ce champ.";
                         }
                         if (value!.length < 8) {
-                          return "Votre mot de passe doit contenir au moins 8 caractères";
+                          return "Votre mot de passe doit contenir au moins 8 caractères.";
                         }
                         return null;
                       },

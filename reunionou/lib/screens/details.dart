@@ -149,7 +149,7 @@ class _DetailspAppState extends State<DetailsApp> {
                 context: context,
                 builder: (context) {
                   return AlertDialog(
-                    title: const Text('Invitez des personnes avec ce lien :'),
+                    title: const Text('Inviter des personnes avec ce lien :'),
                     content: Text(link),
                     actions: [
                       TextButton(

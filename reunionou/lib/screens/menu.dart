@@ -96,7 +96,7 @@ class _SigInpAppState extends State<MySignInPage> {
                   CircularProgressIndicator(),
                   Padding(
                     padding: EdgeInsets.only(top: 16),
-                    child: Text('Awaiting result...'),
+                    child: Text('En attente de résultat...'),
                   ),
                 ],
               ),
